@@ -1,7 +1,8 @@
 var pos1x=0, pos2x=0;
 var pos1y=0, pos2=0;
-var m = 1;
+var m = 0;
 var b = 1;
+var lr = 0.0001;
 var points = [
     [230,456,2],
     [302,254,2],
@@ -15,6 +16,7 @@ var points = [
 ]
 console.log(points);
 function init() {
+  b = randint(0,500);
   pos1x = 0;
   pos1y = f(0);
   pos2x = 500;
@@ -24,22 +26,31 @@ function init() {
 function update() {
   pos1y = f(0);
   pos2y = f(500);
-  var s = document.getElementById("range");
-  var s2 = document.getElementById("range2");
-  m = parseFloat(s.value);
-  b = parseFloat(s2.value);
-  stroke("black");
+  stroke("#0d1b2a");
   line(pos1x, pos1y, pos2x, pos2y);
+  var changed = false;
   for (var i = points.length - 1; i >= 0; i--) {
     if (points[i][2] == 1) {
-      color("black");
+      color("#778da9");
     } else {
-      color("red");
+      color("#1b263b");
     }
     ellipse(points[i][0], points[i][1], 5);
+
+    var pred = side(points[i]);
+    if (pred != points[i][2]) {
+      changed = true;
+      var err = points[i][2] == 1 ? 1 : -1;
+      m += lr * err * points[i][0];
+      b += err;
+    }
   }
-  document.getElementById("p").innerText = "Error rate:" + error();
-  document.getElementById("p2").innerText = "y="+m+"x+" + b;
+  if (!changed) {
+    console.log("trained!")
+    noloop();
+  }
+  document.getElementById("p").innerText = "Error rate:" + error().toFixed(3);
+  document.getElementById("p2").innerText = "y="+m.toFixed(4)+"x+" + b;
 }
 
 function f(x) {
