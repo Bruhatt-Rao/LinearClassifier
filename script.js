@@ -28,7 +28,6 @@ function update() {
   pos2y = f(500);
   stroke("#0d1b2a");
   line(pos1x, pos1y, pos2x, pos2y);
-  var changed = false;
   for (var i = points.length - 1; i >= 0; i--) {
     if (points[i][2] == 1) {
       color("#778da9");
@@ -39,18 +38,13 @@ function update() {
 
     var pred = side(points[i]);
     if (pred != points[i][2]) {
-      changed = true;
       var err = points[i][2] == 1 ? 1 : -1;
       m += lr * err * points[i][0];
       b += err;
     }
   }
-  if (!changed) {
-    console.log("trained!")
-    noloop();
-  }
-  document.getElementById("p").innerText = "Error rate:" + error().toFixed(3);
-  document.getElementById("p2").innerText = "y="+m.toFixed(4)+"x+" + b;
+  document.getElementById("p").innerText = "Error rate: " + error().toFixed(3) + "%";
+  document.getElementById("p2").innerText = "y = "+m.toFixed(4)+"x + " + b;
 }
 
 function f(x) {
@@ -76,4 +70,8 @@ function error() {
   return (w/points.length)*100
 }
 
+function reset() {
+  m = 0;
+  b = randint(0,500);
+}
 loop();
