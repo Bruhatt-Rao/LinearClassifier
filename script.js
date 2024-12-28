@@ -3,18 +3,8 @@ var pos1y=0, pos2=0;
 var m = 0;
 var b = 1;
 var lr = 0.0001;
-var points = [
-    [230,456,2],
-    [302,254,2],
-    [306,50,1],
-    [264,427,2],
-    [119,107,1],
-    [199,281,2],
-    [434,219,1],
-    [227,259,2],
-    [119,181,1]
-]
-console.log(points);
+var points = gen();
+
 function init() {
   b = randint(0,500);
   pos1x = 0;
@@ -52,8 +42,21 @@ function f(x) {
   return out
 }
 
+function f2(x, m2, b2) {
+  var out = (m2*x)+b2;
+  return out
+}
+
 function side(point) {
   if (f(point[0]) < point[1]) {
+    return 2;
+  } else {
+    return 1;
+  }
+}
+
+function side_def(point, m2, b2) {
+  if (f2(point[0], m2, b2) < point[1]) {
     return 2;
   } else {
     return 1;
@@ -73,5 +76,21 @@ function error() {
 function reset() {
   m = 0;
   b = randint(0,500);
+  points = gen();
 }
+
+function gen() {
+  m2 = rand();
+  b2 = randint(100,300);
+  points2 = [];
+  var amount = document.getElementById("amount").value;
+  for (var i = amount; i >= 0; i--) {
+    var p = [randint(0,500), randint(0,500)];
+    p.push(side_def(p, m2, b2));
+    points2.push(p);
+    console.log(p);
+  }
+  return points2;
+}
+
 loop();
